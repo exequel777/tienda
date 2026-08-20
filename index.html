@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Chic - Panel Integral</title>
+    <style>
+        :root {
+            --rosado-fuerte: #ff007f;
+            --rosado-oscuro: #cc0066;
+            --rosado-claro: #ffe6f2;
+            --blanco: #ffffff;
+            --gris-oscuro: #2b2b2b;
+            --verde-disponible: #28a745;
+            --rojo-agotado: #dc3545;
+            --amarillo-oferta: #ffc107;
+            --morado-novedad: #6f42c1;
+            --verde-whatsapp: #25d366;
+            --verde-whatsapp-hover: #1da851;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: var(--gris-oscuro);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            transition: max-width 0.3s ease;
+        }
+
+        body.mode-admin .main-content {
+            max-width: calc(100% - 350px);
+        }
+
+        .top-nav-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            transition: right 0.3s ease;
+        }
+
+        body.mode-admin .top-nav-container {
+            right: 370px;
+        }
+
+        .menu-btn {
+            background-color: var(--rosado-fuerte);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .menu-btn:hover {
+            background-color: var(--rosado-oscuro);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gris-oscuro);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--rosado-claro);
+            color: var(--rosado-oscuro);
+        }
+
+        header {
+            background-color: var(--rosado-fuerte);
+            color: var(--blanco);
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 10px rgba(255, 0, 127, 0.2);
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+
+        .admin-form-container {
+            background: var(--blanco);
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border: 2px solid var(--rosado-fuerte);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--rosado-oscuro);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: var(--rosado-fuerte);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .section-title {
+            color: var(--rosado-oscuro);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 3px solid var(--rosado-fuerte);
+            padding-bottom: 0.4rem;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0 1rem 0;
+        }
+
+        .card-horizontal {
+            min-width: 240px;
+            max-width: 240px;
+            flex-shrink: 0;
+        }
+
+        .grid-vertical {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid-vertical {
+                grid-template-columns: 1fr;
+            }
+
+            .top-nav-container,
+            body.mode-admin .top-nav-container {
+                right: 20px;
+                top: 10px;
+            }
+
+            .main-content,
+            body.mode-admin .main-content {
+                max-width: 100%;
+            }
+
+            .ai-sidebar {
+                display: none !important;
+            }
+        }
+
+        .card {
+            background: var(--blanco);
+            border-radius: 10px;
+            border: 2px solid var(--rosado-fuerte);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-oferta {
+            background: var(--amarillo-oferta);
+            color: #000;
+        }
+
+        .badge-novedad {
+            background: var(--morado-novedad);
+        }
+
+        .card-content {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--rosado-oscuro);
+        }
+
+        .card-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--rosado-fuerte);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 0.9rem;
+            margin-right: 6px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reserve {
+            background: var(--verde-whatsapp);
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-reserve:hover {
+            background: var(--verde-whatsapp-hover);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--rosado-fuerte);
+            animation: popIn 0.2s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-title {
+            color: var(--rosado-oscuro);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.4rem;
+        }
+
+        .modal-body {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+
+        .modal-btn-confirm {
+            flex: 1;
+            background: var(--verde-whatsapp);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-btn-confirm:hover {
+            background: var(--verde-whatsapp-hover);
+        }
+
+        .modal-btn-cancel {
+            flex: 1;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .ai-sidebar {
+            width: 350px;
+            background: var(--blanco);
+            border-left: 3px solid var(--rosado-fuerte);
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+
+        body.mode-admin .ai-sidebar {
+            display: flex;
+        }
+
+        .ai-header {
+            background: var(--rosado-fuerte);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .ai-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            background: #fff5f9;
+        }
+
+        .chat-msg {
+            padding: 0.7rem 0.9rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            max-width: 85%;
+        }
+
+        .chat-msg.user {
+            background: var(--rosado-fuerte);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-msg.ai {
+            background: #e9ecef;
+            color: var(--gris-oscuro);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-btn-no {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            background-color: var(--rojo-agotado);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .ai-input-area {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input-area input {
+            flex: 1;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .ai-input-area button {
+            background: var(--rosado-oscuro);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .security-panel {
+            background: #fff5f9;
+            border: 1px dashed #ff007f;
+            border-radius: 8px;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .security-grid input {
+            padding: 0.55rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .btn-password {
+            background: #cc0066;
+            color: white;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0.7rem 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .login-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background: white;
+            width: min(360px, 90%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #ff007f;
+        }
+
+        .login-card input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin: 0.75rem 0;
+        }
+
+        .login-botones {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .login-botones button {
+            flex: 1;
+            padding: 0.7rem;
+            border: 0;
+            border-radius: 6px;
+            color: white;
+            background: #ff007f;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-botones .btn-cancelar-login {
+            background: #777;
+        }
+
+        .gallery-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .gallery-card {
+            position: relative;
+            width: min(540px, 100%);
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .gallery-card img {
+            display: block;
+            width: 100%;
+            height: min(60vh, 460px);
+            object-fit: contain;
+            background: #f4f4f4;
+        }
+
+        .gallery-title {
+            margin: 0;
+            padding: 0.9rem 3rem;
+            color: #cc0066;
+        }
+
+        .gallery-close,
+        .gallery-prev,
+        .gallery-next {
+            border: 0;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+
+        .gallery-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #ff007f;
+        }
+
+        .gallery-prev,
+        .gallery-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.55);
+            font-size: 1.8rem;
+            padding: 0.4rem 0.7rem;
+        }
+
+        .gallery-prev {
+            left: 0;
+        }
+
+        .gallery-next {
+            right: 0;
+        }
+
+        .gallery-count {
+            padding-bottom: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        body:not(.mode-admin) .card {
+            cursor: pointer;
+        }
+
+        /* === Estilos Redes Sociales Admin === */
+        .social-admin-section {
+            background: #fff5f9;
+            border: 1px dashed var(--rosado-fuerte);
+            border-radius: 8px;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+
+        .social-admin-section h4 {
+            margin: 0 0 0.8rem 0;
+            color: var(--rosado-oscuro);
+        }
+
+        .social-list-admin {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .social-item-admin {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 0.7rem;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .social-item-admin .social-icon-preview {
+            font-size: 1.3rem;
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .social-item-admin .social-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .social-item-admin .social-info .social-platform-name {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--rosado-oscuro);
+        }
+
+        .social-item-admin .social-info .social-url-display {
+            font-size: 0.78rem;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .social-item-admin .btn-social-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .social-add-form {
+            display: grid;
+            grid-template-columns: 140px 1fr auto;
+            gap: 0.5rem;
+            align-items: end;
+        }
+
+        .social-add-form select,
+        .social-add-form input {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .btn-social-add {
+            background: var(--rosado-fuerte);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        /* === Estilos Selector de Imagen === */
+        .image-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .image-input-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-image-source {
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid var(--rosado-fuerte);
+            background: white;
+            color: var(--rosado-oscuro);
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .btn-image-source:hover {
+            background: var(--rosado-claro);
+        }
+
+        .image-preview-mini {
+            width: 100%;
+            max-height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .image-fallback-url {
+            display: none;
+        }
+
+        .image-fallback-url input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-nav-container">
+        <button class="menu-btn" onclick="toggleMenu()">
+            ☰ <span>Menú</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-item" onclick="cambiarModo('cliente')">
+                🛍️ Ver Modo Cliente
+            </div>
+            <div class="dropdown-item" onclick="cambiarModo('admin')">
+                ⚙️ Modo Administrador
+            </div>
+            <div id="redesSocialesDropdown"></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header id="headerTitle">
+            <h1>🛍️ tienda en proceso</h1>
+            <p id="headerSubtitle">Descubre lo último en tendencia y estilo</p>
+        </header>
+
+        <div class="admin-form-container" id="adminFormSection" style="display: none;">
+            <h3 id="formTitle" style="margin-top:0; color: var(--rosado-oscuro);">➕ Agregar Nuevo Producto</h3>
+            <form id="productForm">
+                <input type="hidden" id="prodId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="nombre" required placeholder="Ej: Falda Jeani">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio Original ($)</label>
+                        <input type="number" id="precioOriginal" required placeholder="15990">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="stock" required placeholder="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Imagen del Producto</label>
+                        <div class="image-input-container">
+                            <img id="imagePreviewMini" class="image-preview-mini" alt="Vista previa">
+                            <div class="image-input-buttons">
+                                <button type="button" class="btn-image-source" onclick="abrirSelectorImagen('galeria')">
+                                    🖼️ Galería
+                                </button>
+                                <button type="button" class="btn-image-source" onclick="abrirSelectorImagen('camara')">
+                                    📷 Cámara
+                                </button>
+                            </div>
+                            <input type="file" id="fileInputGaleria" accept="image/*" style="display:none;" onchange="handleImageSelected(event)">
+                            <input type="file" id="fileInputCamara" accept="image/*" capture="environment" style="display:none;" onchange="handleImageSelected(event)">
+                            <div class="image-fallback-url" id="imageFallbackUrl">
+                                <input type="url" id="imagenUrl" placeholder="Pega la URL de la imagen aquí">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="enOferta" onchange="toggleOfertaFields()">
+                        <label for="enOferta">¿Oferta?</label>
+                    </div>
+                    <div class="form-group" id="groupPrecioOferta" style="display: none;">
+                        <label>Precio Oferta ($)</label>
+                        <input type="number" id="precioOferta">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="esNovedad" onchange="toggleNovedadFields()">
+                        <label for="esNovedad">¿Novedad?</label>
+                    </div>
+                    <div class="form-group" id="groupFechaLlegada" style="display: none;">
+                        <label>Llegada</label>
+                        <input type="date" id="fechaLlegada">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSave" style="margin-top: 1rem;">Guardar Producto</button>
+            </form>
+
+            <section class="security-panel">
+                <h4>🔒 Seguridad del administrador</h4>
+                <div class="security-grid">
+                    <input type="password" id="claveActual" placeholder="Contraseña actual">
+                    <input type="password" id="claveNueva" placeholder="Nueva contraseña">
+                    <input type="password" id="claveConfirmacion" placeholder="Confirmar nueva contraseña">
+                </div>
+                <button type="button" class="btn-password" onclick="cambiarContrasenaAdmin()">
+                    Cambiar contraseña
+                </button>
+            </section>
+
+            <section class="social-admin-section">
+                <h4>📱 Redes Sociales (Visibles en el menú)</h4>
+                <div class="social-list-admin" id="socialListAdmin"></div>
+                <div class="social-add-form">
+                    <select id="socialPlatformSelect">
+                        <option value="instagram">📷 Instagram</option>
+                        <option value="tiktok">🎵 TikTok</option>
+                        <option value="facebook">👍 Facebook</option>
+                        <option value="whatsapp">💬 WhatsApp</option>
+                        <option value="email">✉️ Email</option>
+                        <option value="telefono">📞 Teléfono</option>
+                        <option value="youtube">▶️ YouTube</option>
+                        <option value="twitter">🐦 X / Twitter</option>
+                        <option value="sitio_web">🌐 Sitio Web</option>
+                    </select>
+                    <input type="text" id="socialUrlInput" placeholder="URL o número / email">
+                    <button type="button" class="btn-social-add" onclick="agregarRedSocial()">+ Agregar</button>
+                </div>
+            </section>
+        </div>
+
+        <h3 class="section-title">🔥 Ofertas</h3>
+        <div class="horizontal-scroll" id="containerOfertas"></div>
+        <h3 class="section-title"> Próximos Lanzamientos </h3>
+        <div class="horizontal-scroll" id="containerNovedades"></div>
+        <h3 class="section-title" style="margin-top: 2rem;"> Productos Disponibles</h3>
+        <div class="grid-vertical" id="containerDisponibles"></div>
+    </div>
+
+    <div class="ai-sidebar">
+        <div class="ai-header">🤖 Asistente IA Admin</div>
+        <div class="ai-messages" id="chatMessages">
+            <div class="chat-msg ai">
+                ¡Hola Admin! Puedo ayudarte a gestionar tu inventario rápidamente.<br><br>
+                • <i>"Quita la oferta del Pantalón"</i><br>
+                • <i>"Pon en oferta la Chaqueta a 15000"</i><br>
+                • <i>"Agrega un Vestido a 12000 con 5 de stock"</i>
+            </div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="aiInput" placeholder="Pídele algo a la IA..." onkeypress="handleKeyPress(event)">
+            <button onclick="procesarComandoIA()">Enviar</button>
+        </div>
+    </div>
+
+    <div class="login-overlay" id="loginAdmin">
+        <div class="login-card">
+            <h3>🔒 Acceso administrador</h3>
+            <p>Ingresa la contraseña para continuar.</p>
+            <input type="password" id="inputClaveAdmin" placeholder="Contraseña"
+                onkeydown="if(event.key === 'Enter') validarAccesoAdmin()">
+            <div class="login-botones">
+                <button onclick="validarAccesoAdmin()">Ingresar</button>
+                <button class="btn-cancelar-login" onclick="cerrarLoginAdmin()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalReserva">
+        <div class="modal-card">
+            <div class="modal-icon">📲</div>
+            <h3 class="modal-title">¡Reserva por WhatsApp!</h3>
+            <p class="modal-body">
+                ¿Deseas ir al WhatsApp oficial de nuestra tienda para concretar la reserva de este producto?
+            </p>
+            <div class="modal-actions">
+                <button class="modal-btn-cancel" onclick="cancelarReserva()">No, volver</button>
+                <button class="modal-btn-confirm" onclick="confirmarYRedirigirWhatsApp()">Ir a WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-overlay" id="galeriaProducto" onclick="if(event.target === this) cerrarGaleria()">
+        <div class="gallery-card">
+            <button class="gallery-close" onclick="cerrarGaleria()">✕</button>
+            <button class="gallery-prev" onclick="cambiarFotoGaleria(-1)">‹</button>
+            <img id="galeriaImagen" src="" alt="Foto del producto">
+            <button class="gallery-next" onclick="cambiarFotoGaleria(1)">›</button>
+            <h3 class="gallery-title" id="galeriaTitulo"></h3>
+            <div class="gallery-count" id="galeriaContador"></div>
+        </div>
+    </div>
+
+    <script>
+        let modoActual = 'cliente';
+        let tokenAdmin = null;
+        const API_URL = window.location.origin + '/api';
+        const NUMERO_WHATSAPP = "56912345678";
+        const REDES_SOCIALES_STORAGE = 'redes_sociales_tienda';
+
+        /**
+         * Verifica si hay un token guardado en sessionStorage
+         * y si sigue siendo válido consultando al backend.
+         * Se ejecuta al cargar la página.
+         */
+        async function verificarSesionActiva() {
+            const tokenGuardado = sessionStorage.getItem('admin_token');
+            if (!tokenGuardado) return;
+
+            try {
+                const respuesta = await fetch(`${API_URL}/verificar-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: tokenGuardado })
+                });
+
+                const data = await respuesta.json();
+
+                if (data.valido) {
+                    tokenAdmin = tokenGuardado;
+                    activarModo('admin');
+                } else {
+                    sessionStorage.removeItem('admin_token');
+                    tokenAdmin = null;
+                }
+            } catch (error) {
+                console.warn('No se pudo verificar sesión con el servidor.');
+                sessionStorage.removeItem('admin_token');
+                tokenAdmin = null;
+            }
+        }
+
+        /**
+         * Cambia la contraseña del admin.
+         * Envía la actual y la nueva al backend, que:
+         * 1. Verifica el token JWT
+         * 2. Valida la contraseña actual con bcrypt
+         * 3. Genera hash nuevo y actualiza el .env
+         */
+        async function cambiarContrasenaAdmin() {
+            const actual = document.getElementById('claveActual').value;
+            const nueva = document.getElementById('claveNueva').value;
+            const confirmacion = document.getElementById('claveConfirmacion').value;
+
+            if (!actual || !nueva || !confirmacion) {
+                alert('Todos los campos son obligatorios.');
+                return;
+            }
+
+            if (nueva.length < 6) {
+                alert('La nueva contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+
+            if (nueva !== confirmacion) {
+                alert('Las nuevas contraseñas no coinciden.');
+                return;
+            }
+
+            if (!tokenAdmin) {
+                alert('No hay sesión activa. Inicia sesión nuevamente.');
+                return;
+            }
+
+            try {
+                const respuesta = await fetch(`${API_URL}/cambiar-contrasena`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: tokenAdmin,
+                        contrasenaActual: actual,
+                        contrasenaNueva: nueva
+                    })
+                });
+
+                const data = await respuesta.json();
+
+                if (respuesta.ok) {
+                    alert(data.mensaje);
+                    document.getElementById('claveActual').value = '';
+                    document.getElementById('claveNueva').value = '';
+                    document.getElementById('claveConfirmacion').value = '';
+                } else {
+                    alert(data.error || 'Error al cambiar contraseña.');
+                }
+            } catch (error) {
+                alert('Error de conexión con el servidor.');
+            }
+        }
+
+        let urlWhatsAppActual = '';
+        let fotosGaleriaActual = [];
+        let indiceFotoGaleria = 0;
+
+        function abrirGaleria(prod) {
+            fotosGaleriaActual = Array.isArray(prod.imagenes) && prod.imagenes.length
+                ? prod.imagenes
+                : [prod.imagenUrl];
+            indiceFotoGaleria = 0;
+            document.getElementById('galeriaTitulo').textContent = prod.nombre;
+            document.getElementById('galeriaProducto').style.display = 'flex';
+            mostrarFotoGaleria();
+        }
+
+        function mostrarFotoGaleria() {
+            const total = fotosGaleriaActual.length;
+            document.getElementById('galeriaImagen').src = fotosGaleriaActual[indiceFotoGaleria];
+            document.getElementById('galeriaContador').textContent = `Foto ${indiceFotoGaleria + 1} de ${total}`;
+        }
+
+        function cambiarFotoGaleria(direccion) {
+            indiceFotoGaleria = (indiceFotoGaleria + direccion + fotosGaleriaActual.length) % fotosGaleriaActual.length;
+            mostrarFotoGaleria();
+        }
+
+        function cerrarGaleria() {
+            document.getElementById('galeriaProducto').style.display = 'none';
+        }
+
+        function toggleMenu() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.menu-btn') && !event.target.matches('.menu-btn *')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+
+        function cambiarModo(modo) {
+            if (modo === 'admin' && modoActual !== 'admin') {
+                document.getElementById('loginAdmin').style.display = 'flex';
+                document.getElementById('inputClaveAdmin').value = '';
+                document.getElementById('inputClaveAdmin').focus();
+                return;
+            }
+            activarModo(modo);
+        }
+
+        async function validarAccesoAdmin() {
+            const clave = document.getElementById('inputClaveAdmin').value;
+
+            if (!clave) {
+                alert('Ingresa la contraseña.');
+                return;
+            }
+
+            try {
+                const respuesta = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: clave })
+                });
+
+                const data = await respuesta.json();
+
+                if (respuesta.ok && data.token) {
+                    tokenAdmin = data.token;
+                    sessionStorage.setItem('admin_token', data.token);
+                    cerrarLoginAdmin();
+                    activarModo('admin');
+                } else {
+                    alert(data.error || 'Contraseña incorrecta.');
+                }
+            } catch (error) {
+                alert('Error de conexión con el servidor. Verifica que esté activo.');
+            }
+        }
+
+        function cerrarLoginAdmin() {
+            document.getElementById('loginAdmin').style.display = 'none';
+        }
+
+        function activarModo(modo) {
+            modoActual = modo;
+            const formSection = document.getElementById('adminFormSection');
+            const headerTitle = document.getElementById('headerTitle');
+
+            if (modo === 'admin') {
+                document.body.classList.add('mode-admin');
+                formSection.style.display = 'block';
+                headerTitle.querySelector('h1').textContent = '⚙️ Panel Admin - Mi Tienda Chic';
+                headerTitle.querySelector('p').textContent = 'Gestión directa del catálogo e inventario';
+            } else {
+                document.body.classList.remove('mode-admin');
+                formSection.style.display = 'none';
+                headerTitle.querySelector('h1').textContent = '🛍️ Tienda Chic';
+                headerTitle.querySelector('p').textContent = 'Descubre lo último en tendencia y estilo';
+            }
+
+            document.getElementById('dropdownMenu').classList.remove('show');
+            renderizarVista();
+        }
+
+        function toggleOfertaFields() {
+            document.getElementById('groupPrecioOferta').style.display = document.getElementById('enOferta').checked ? 'flex' : 'none';
+        }
+
+        function toggleNovedadFields() {
+            document.getElementById('groupFechaLlegada').style.display = document.getElementById('esNovedad').checked ? 'flex' : 'none';
+        }
+
+        function obtenerProductos() {
+            return JSON.parse(localStorage.getItem('productos_tienda')) || [];
+        }
+
+        function guardarProductos(productos) {
+            localStorage.setItem('productos_tienda', JSON.stringify(productos));
+            renderizarVista();
+        }
+
+        function crearTarjeta(prod, esHorizontal = false) {
+            const card = document.createElement('div');
+            card.className = esHorizontal ? 'card card-horizontal' : 'card';
+
+            let HTMLPrecios = prod.enOferta
+                ? `<div class="card-price"><span class="price-original">$${prod.precioOriginal.toLocaleString('es-CL')}</span>$${prod.precioOferta.toLocaleString('es-CL')}</div>`
+                : `<div class="card-price">$${prod.precioOriginal.toLocaleString('es-CL')}</div>`;
+
+            let badgeHTML = '';
+            if (prod.enOferta) badgeHTML = `<span class="badge badge-oferta">Oferta</span>`;
+            else if (prod.esNovedad) badgeHTML = `<span class="badge badge-novedad">Novedad</span>`;
+
+            let accionesHTML = '';
+            if (modoActual === 'admin') {
+                accionesHTML = `
+                    <small>Stock: ${prod.stock}</small>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="cargarEdicion('${prod.id}')">✏️ Edit</button>
+                        <button class="btn-delete" onclick="eliminarProducto('${prod.id}')">🗑️ Del</button>
+                    </div>`;
+            }
+
+            card.innerHTML = `
+                ${badgeHTML}
+                <img src="${prod.imagenUrl}" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/300x300/ff007f/ffffff?text=Sin+imagen'">
+                <div class="card-content">
+                    <h4 class="card-title">${prod.nombre}</h4>
+                    ${HTMLPrecios}
+                    ${accionesHTML}
+                </div>
+            `;
+
+            if (modoActual !== 'admin') {
+                card.onclick = function () {
+                    urlWhatsAppActual = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent('Hola! Me interesa: ' + prod.nombre + ' ($' + (prod.enOferta ? prod.precioOferta : prod.precioOriginal).toLocaleString('es-CL') + ')')}`;
+                    document.getElementById('modalReserva').style.display = 'flex';
+                };
+            }
+
+            return card;
+        }
+
+        function renderizarVista() {
+            const productos = obtenerProductos();
+            const containerOfertas = document.getElementById('containerOfertas');
+            const containerNovedades = document.getElementById('containerNovedades');
+            const containerDisponibles = document.getElementById('containerDisponibles');
+
+            containerOfertas.replaceChildren();
+            containerNovedades.replaceChildren();
+            containerDisponibles.replaceChildren();
+
+            const ofertas = productos.filter(p => p.enOferta);
+            const novedades = productos.filter(p => p.esNovedad && !p.enOferta);
+            const disponibles = productos.filter(p => !p.esNovedad && !p.enOferta);
+
+            if (ofertas.length === 0) {
+                containerOfertas.innerHTML = `<small style="color:#888;">Sin ofertas por ahora</small>`;
+            } else {
+                ofertas.forEach(prod => containerOfertas.appendChild(crearTarjeta(prod, true)));
+            }
+
+            if (novedades.length === 0) {
+                containerNovedades.innerHTML = `<small style="color:#888;">Sin novedades</small>`;
+            } else {
+                novedades.forEach(prod => containerNovedades.appendChild(crearTarjeta(prod, true)));
+            }
+
+            if (disponibles.length === 0) {
+                containerDisponibles.innerHTML = `<small style="color:#888;">Sin productos disponibles</small>`;
+            } else {
+                disponibles.forEach(prod => containerDisponibles.appendChild(crearTarjeta(prod, false)));
+            }
+
+            renderizarRedesSociales();
+        }
+
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const productos = obtenerProductos();
+            const id = document.getElementById('prodId').value;
+
+            const imagenUrlFinal = document.getElementById('imagenUrl').value || 'https://via.placeholder.com/300x300/ff007f/ffffff?text=Producto';
+
+            const nuevoProducto = {
+                id: id ? id : Date.now().toString(),
+                nombre: document.getElementById('nombre').value,
+                precioOriginal: Number(document.getElementById('precioOriginal').value),
+                stock: Number(document.getElementById('stock').value),
+                imagenUrl: imagenUrlFinal,
+                enOferta: document.getElementById('enOferta').checked,
+                precioOferta: document.getElementById('enOferta').checked ? Number(document.getElementById('precioOferta').value) : 0,
+                esNovedad: document.getElementById('esNovedad').checked,
+                fechaLlegada: document.getElementById('esNovedad').checked ? document.getElementById('fechaLlegada').value : ''
+            };
+
+            if (id) {
+                const index = productos.findIndex(p => p.id === id);
+                if (index !== -1) productos[index] = nuevoProducto;
+            } else {
+                productos.push(nuevoProducto);
+            }
+
+            guardarProductos(productos);
+            limpiarFormulario();
+        });
+
+        function cargarEdicion(id) {
+            const prod = obtenerProductos().find(p => p.id === id);
+            if (!prod) return;
+
+            document.getElementById('prodId').value = prod.id;
+            document.getElementById('nombre').value = prod.nombre;
+            document.getElementById('precioOriginal').value = prod.precioOriginal;
+            document.getElementById('stock').value = prod.stock;
+
+            const imagenUrlInput = document.getElementById('imagenUrl');
+            const preview = document.getElementById('imagePreviewMini');
+            const fallback = document.getElementById('imageFallbackUrl');
+
+            if (prod.imagenUrl && (prod.imagenUrl.startsWith('data:') || prod.imagenUrl.startsWith('http'))) {
+                imagenUrlInput.value = prod.imagenUrl;
+                if (prod.imagenUrl.startsWith('data:')) {
+                    preview.src = prod.imagenUrl;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+                fallback.style.display = 'block';
+            } else {
+                imagenUrlInput.value = prod.imagenUrl || '';
+                preview.style.display = 'none';
+                fallback.style.display = 'block';
+            }
+
+            document.getElementById('enOferta').checked = prod.enOferta;
+            toggleOfertaFields();
+            document.getElementById('precioOferta').value = prod.precioOferta || '';
+
+            document.getElementById('esNovedad').checked = prod.esNovedad;
+            toggleNovedadFields();
+            document.getElementById('fechaLlegada').value = prod.fechaLlegada || '';
+
+            document.getElementById('formTitle').textContent = '✏️ Editar Producto';
+            document.getElementById('btnSave').textContent = 'Actualizar';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function eliminarProducto(id) {
+            if (confirm('¿Eliminar producto?')) {
+                guardarProductos(obtenerProductos().filter(p => p.id !== id));
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('productForm').reset();
+            document.getElementById('prodId').value = '';
+            document.getElementById('imagePreviewMini').style.display = 'none';
+            document.getElementById('imagePreviewMini').src = '';
+            document.getElementById('imagenUrl').value = '';
+            toggleOfertaFields();
+            toggleNovedadFields();
+            document.getElementById('formTitle').textContent = '➕ Agregar Nuevo Producto';
+            document.getElementById('btnSave').textContent = 'Guardar Producto';
+        }
+
+        /* ===== SISTEMA DE IMAGEN: CÁMARA / GALERÍA ===== */
+        function abrirSelectorImagen(tipo) {
+            const fileInputGaleria = document.getElementById('fileInputGaleria');
+            const fileInputCamara = document.getElementById('fileInputCamara');
+
+            if (tipo === 'camara') {
+                fileInputCamara.value = '';
+                fileInputCamara.click();
+            } else {
+                fileInputGaleria.value = '';
+                fileInputGaleria.click();
+            }
+        }
+
+        function handleImageSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor selecciona un archivo de imagen válido.');
+                return;
+            }
+
+            const maxSizeMB = 5;
+            if (file.size > maxSizeMB * 1024 * 1024) {
+                alert(`La imagen no puede superar ${maxSizeMB}MB.`);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const dataUrl = e.target.result;
+                const imagenUrlInput = document.getElementById('imagenUrl');
+                const preview = document.getElementById('imagePreviewMini');
+                const fallback = document.getElementById('imageFallbackUrl');
+
+                imagenUrlInput.value = dataUrl;
+                preview.src = dataUrl;
+                preview.style.display = 'block';
+                fallback.style.display = 'block';
+            };
+            reader.onerror = function () {
+                alert('Error al leer la imagen. Intenta con otra.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* ===== SISTEMA DE REDES SOCIALES ===== */
+        const PLATAFORMAS_REDES = {
+            instagram: { icono: '📷', nombre: 'Instagram', placeholder: 'https://instagram.com/tu_usuario' },
+            tiktok: { icono: '🎵', nombre: 'TikTok', placeholder: 'https://tiktok.com/@tu_usuario' },
+            facebook: { icono: '👍', nombre: 'Facebook', placeholder: 'https://facebook.com/tu_pagina' },
+            whatsapp: { icono: '💬', nombre: 'WhatsApp', placeholder: '56912345678' },
+            email: { icono: '✉️', nombre: 'Email', placeholder: 'tu@email.com' },
+            telefono: { icono: '📞', nombre: 'Teléfono', placeholder: '+56912345678' },
+            youtube: { icono: '▶️', nombre: 'YouTube', placeholder: 'https://youtube.com/@tu_canal' },
+            twitter: { icono: '🐦', nombre: 'X / Twitter', placeholder: 'https://x.com/tu_usuario' },
+            sitio_web: { icono: '🌐', nombre: 'Sitio Web', placeholder: 'https://tuSitio.com' }
+        };
+
+        function obtenerRedesSociales() {
+            return JSON.parse(localStorage.getItem(REDES_SOCIALES_STORAGE)) || [];
+        }
+
+        function guardarRedesSociales(redes) {
+            localStorage.setItem(REDES_SOCIALES_STORAGE, JSON.stringify(redes));
+        }
+
+        function inicializarRedesSociales() {
+            const redes = obtenerRedesSociales();
+            if (redes.length === 0) {
+                const porDefecto = [
+                    { id: '1', plataforma: 'instagram', url: 'https://www.instagram.com/tu_usuario' },
+                    { id: '2', plataforma: 'tiktok', url: 'https://www.tiktok.com/@tu_usuario' },
+                    { id: '3', plataforma: 'facebook', url: 'https://www.facebook.com/tu_pagina' },
+                    { id: '4', plataforma: 'telefono', url: '+56912345678' },
+                    { id: '5', plataforma: 'email', url: 'tuempresa@gmail.com' }
+                ];
+                guardarRedesSociales(porDefecto);
+            }
+        }
+
+        function renderizarRedesSociales() {
+            const redes = obtenerRedesSociales();
+            const dropdownContainer = document.getElementById('redesSocialesDropdown');
+            const socialListAdmin = document.getElementById('socialListAdmin');
+
+            if (dropdownContainer) {
+                dropdownContainer.innerHTML = '';
+                redes.forEach(red => {
+                    const info = PLATAFORMAS_REDES[red.plataforma] || { icono: '🔗', nombre: red.plataforma };
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item';
+                    item.href = construirEnlaceRed(red);
+                    item.target = '_blank';
+                    item.textContent = `${info.icono} ${info.nombre}: ${red.url}`;
+                    dropdownContainer.appendChild(item);
+                });
+            }
+
+            if (socialListAdmin) {
+                socialListAdmin.innerHTML = '';
+                if (redes.length === 0) {
+                    socialListAdmin.innerHTML = `<small style="color:#888;">No hay redes sociales agregadas.</small>`;
+                }
+                redes.forEach(red => {
+                    const info = PLATAFORMAS_REDES[red.plataforma] || { icono: '🔗', nombre: red.plataforma };
+                    const item = document.createElement('div');
+                    item.className = 'social-item-admin';
+                    item.innerHTML = `
+                        <span class="social-icon-preview">${info.icono}</span>
+                        <div class="social-info">
+                            <div class="social-platform-name">${info.nombre}</div>
+                            <div class="social-url-display">${red.url}</div>
+                        </div>
+                        <button class="btn-social-delete" onclick="eliminarRedSocial('${red.id}')">✕</button>
+                    `;
+                    socialListAdmin.appendChild(item);
+                });
+            }
+        }
+
+        function construirEnlaceRed(red) {
+            switch (red.plataforma) {
+                case 'whatsapp': return `https://wa.me/${red.url.replace(/[^0-9]/g, '')}`;
+                case 'telefono': return `tel:${red.url.replace(/[^0-9+]/g, '')}`;
+                case 'email': return `mailto:${red.url}`;
+                default: return red.url.startsWith('http') ? red.url : `https://${red.url}`;
+            }
+        }
+
+        function agregarRedSocial() {
+            const plataforma = document.getElementById('socialPlatformSelect').value;
+            const url = document.getElementById('socialUrlInput').value.trim();
+
+            if (!url) {
+                alert('Ingresa la URL o dato de la red social.');
+                return;
+            }
+
+            const info = PLATAFORMAS_REDES[plataforma];
+            if (plataforma === 'email' && !url.includes('@')) {
+                alert('Por favor ingresa un email válido.');
+                return;
+            }
+
+            const redes = obtenerRedesSociales();
+            const nueva = {
+                id: Date.now().toString(),
+                plataforma: plataforma,
+                url: url
+            };
+
+            redes.push(nueva);
+            guardarRedesSociales(redes);
+            document.getElementById('socialUrlInput').value = '';
+            renderizarRedesSociales();
+        }
+
+        function eliminarRedSocial(id) {
+            if (confirm('¿Eliminar esta red social del menú?')) {
+                const redes = obtenerRedesSociales().filter(r => r.id !== id);
+                guardarRedesSociales(redes);
+                renderizarRedesSociales();
+            }
+        }
+
+        /* ===== IA CHAT ===== */
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') procesarComandoIA();
+        }
+
+        function agregarMensajeChat(texto, emisor) {
+            const chatMessages = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${emisor}`;
+            msg.innerHTML = texto;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function buscarProductoEnTexto(comando, productos) {
+            const cmd = comando.toLowerCase();
+            return productos.find(p => {
+                const nombreProd = p.nombre.toLowerCase();
+                return cmd.includes(nombreProd) || nombreProd.includes(cmd);
+            });
+        }
+
+        function respuestaNoEncontrado() {
+            return `No encontré ningún producto con ese nombre en tu catálogo.<br><br>
+            ¿Deseas volver a la opción de agregar producto?<br>
+            <button class="chat-btn-no" onclick="cancelarEdicionYVolverAgregar()">❌ NO / Volver a agregar</button>`;
+        }
+
+        function cancelarEdicionYVolverAgregar() {
+            limpiarFormulario();
+            agregarMensajeChat("NO", "user");
+            setTimeout(() => {
+                agregarMensajeChat("Búsqueda cancelada. El formulario está listo para agregar un nuevo producto. ➕", "ai");
+            }, 300);
+        }
+
+        function procesarComandoIA() {
+            const input = document.getElementById('aiInput');
+            const comando = input.value.trim().toLowerCase();
+            if (!comando) return;
+
+            agregarMensajeChat(input.value, 'user');
+            input.value = '';
+
+            let productos = obtenerProductos();
+            let respuesta = "No entendí la instrucción. Prueba pedirme quitar una oferta, agregar o editar un producto.";
+
+            if (comando === 'no') {
+                cancelarEdicionYVolverAgregar();
+                return;
+            }
+
+            const esQuitarOferta = [
+                'quitar oferta', 'quita oferta', 'sacar oferta', 'saca oferta',
+                'borrar oferta', 'borra oferta', 'sin oferta', 'eliminar oferta',
+                'elimina oferta', 'desactivar oferta', 'desactiva oferta', 'precio normal'
+            ].some(patron => comando.includes(patron));
+
+            if (esQuitarOferta) {
+                const productoEncontrado = buscarProductoEnTexto(comando, productos);
+                if (productoEncontrado) {
+                    productoEncontrado.enOferta = false;
+                    productoEncontrado.precioOferta = 0;
+                    guardarProductos(productos);
+                    respuesta = `¡Listo! Se quitó la oferta a <b>${productoEncontrado.nombre}</b>. Su precio volvió a ser <b>$${productoEncontrado.precioOriginal.toLocaleString('es-CL')}</b>.`;
+                } else {
+                    respuesta = respuestaNoEncontrado();
+                }
+            }
+            else if (comando.includes('oferta') || comando.includes('descuento') || comando.includes('rebaja') || comando.includes('editar') || comando.includes('modificar')) {
+                const precioMatch = comando.match(/(\d+)/);
+                const productoEncontrado = buscarProductoEnTexto(comando, productos);
+
+                if (productoEncontrado && precioMatch) {
+                    const nuevoPrecioOferta = parseInt(precioMatch[1]);
+                    productoEncontrado.enOferta = true;
+                    productoEncontrado.precioOferta = nuevoPrecioOferta;
+                    guardarProductos(productos);
+                    respuesta = `¡Oferta aplicada! <b>${productoEncontrado.nombre}</b> ahora cuesta $${nuevoPrecioOferta.toLocaleString('es-CL')}.`;
+                } else if (productoEncontrado) {
+                    cargarEdicion(productoEncontrado.id);
+                    respuesta = `Encontré el producto <b>${productoEncontrado.nombre}</b> y cargué sus datos en el formulario para editar.`;
+                } else {
+                    respuesta = respuestaNoEncontrado();
+                }
+            }
+            else if (comando.includes('agrega') || comando.includes('crea') || comando.includes('añade')) {
+                const precioMatch = comando.match(/(\d+)\s*(pesos|\$|de precio)?/);
+                const stockMatch = comando.match(/(\d+)\s*(de stock|unidades|un)/);
+
+                const nombre = comando.replace(/(agrega|crea|añade|un|una|el|la|producto|a|con|de stock|unidades|pesos|\$|\d+)/g, '').trim();
+                const precio = precioMatch ? parseInt(precioMatch[1]) : 10000;
+                const stock = stockMatch ? parseInt(stockMatch[1]) : 5;
+
+                const nuevo = {
+                    id: Date.now().toString(),
+                    nombre: nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : "Nuevo Producto",
+                    precioOriginal: precio,
+                    stock: stock,
+                    imagenUrl: "https://via.placeholder.com/300x300/ff007f/ffffff?text=Producto",
+                    enOferta: false,
+                    precioOferta: 0,
+                    esNovedad: comando.includes('novedad') || comando.includes('lanzamiento'),
+                    fechaLlegada: ''
+                };
+
+                productos.push(nuevo);
+                guardarProductos(productos);
+                respuesta = `¡Guardado! Producto <b>${nuevo.nombre}</b> agregado con $${nuevo.precioOriginal.toLocaleString('es-CL')} y stock de ${nuevo.stock}.`;
+            }
+
+            setTimeout(() => agregarMensajeChat(respuesta, 'ai'), 300);
+        }
+
+        function cancelarReserva() {
+            document.getElementById('modalReserva').style.display = 'none';
+            urlWhatsAppActual = '';
+        }
+
+        function confirmarYRedirigirWhatsApp() {
+            if (urlWhatsAppActual) {
+                window.open(urlWhatsAppActual, '_blank');
+            }
+            document.getElementById('modalReserva').style.display = 'none';
+            urlWhatsAppActual = '';
+        }
+
+        window.onload = function () {
+            inicializarRedesSociales();
+            verificarSesionActiva().then(() => {
+                renderizarVista();
+            });
+        };
+    </script>
+</body>
+
+</html>

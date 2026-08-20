@@ -1,0 +1,17 @@
+# ============================================
+# GITIGNORE - Tienda Chic
+# ============================================
+
+# Variables de entorno (contraseñas, JWT secrets, hashes)
+.env
+
+# Dependencias de Node.js
+node_modules/
+
+# Logs del sistema
+*.log
+npm-debug.log*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
