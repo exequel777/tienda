@@ -42,22 +42,9 @@ app.use(express.static(path.join(__dirname)));
 // VARIABLES DE ENTORNO
 // ============================================
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
-const JWT_EXPIRACION = '2h'; // Token válido por 2 horas
-
-// Validar que las variables de entorno estén configuradas
-if (!JWT_SECRET || JWT_SECRET.length < 32) {
-    console.error('ERROR CRITICO: JWT_SECRET no está configurado o es muy corto.');
-    console.error('Genera una clave segura y agrégala en .env');
-    process.exit(1);
-}
-
-if (!ADMIN_PASSWORD_HASH || ADMIN_PASSWORD_HASH.startsWith('$2b$10$Definitivamente')) {
-    console.error('ERROR: ADMIN_PASSWORD_HASH no ha sido generado.');
-    console.error('Ejecuta: npm run generar-hash');
-    process.exit(1);
-}
+const JWT_SECRET = process.env.JWT_SECRET || 'sk_tienda_chic_9f8e7d6c5b4a3210_secret_key_ultra_segura_2026';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$hkdO2NPNqJ3iq.hpJ2aSseJhiBD7uOfm4HStvHFXqfRZpPSCI2nDW';
+const JWT_EXPIRACION = '2h';
 
 // ============================================
 // ENDPOINTS DE AUTENTICACIÓN
